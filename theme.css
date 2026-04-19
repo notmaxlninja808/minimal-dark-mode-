@@ -1,0 +1,287 @@
+/**
+ * @name minimal dark mode+
+ * @author 808
+ * @description A sleek minimal dark theme with animated lava lamp effect using greyscale blobs, glassmorphism transparency, and smooth animations throughout.
+ * @version 2.4.0
+ */
+
+/* Lava lamp animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-50px) scale(1.1); }
+}
+
+@keyframes float2 {
+    0%, 100% { transform: translateY(0px) translateX(0px) scale(1); }
+    50% { transform: translateY(-40px) translateX(20px) scale(1.15); }
+}
+
+@keyframes morph {
+    0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+    50% { border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%; }
+    75% { border-radius: 60% 40% 60% 30% / 70% 30% 50% 60%; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.6; }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Customization Variables */
+:root {
+    /* Lava lamp colors */
+    --blob-1-inner: rgba(180, 180, 180, 0.4);
+    --blob-1-outer: rgba(150, 150, 150, 0.2);
+    --blob-2-inner: rgba(200, 200, 200, 0.35);
+    --blob-2-outer: rgba(170, 170, 170, 0.15);
+    --blob-3-inner: rgba(160, 160, 160, 0.3);
+    --blob-3-outer: rgba(140, 140, 140, 0.1);
+    --bg-color: #0a0a0a;
+    
+    /* Animation speeds */
+    --blob-1-speed: 15s;
+    --blob-2-speed: 18s;
+    --blob-3-speed: 20s;
+    --morph-speed: 8s;
+    
+    /* Transparency levels */
+    --sidebar-opacity: 0.6;
+    --chat-opacity: 0.4;
+    --member-opacity: 0.5;
+}
+
+/* Discord Theme Variables - Dark Mode */
+.theme-dark {
+    --background-primary: var(--bg-color);
+    --background-secondary: rgba(20, 20, 20, 0.8);
+    --background-tertiary: rgba(30, 30, 30, 0.7);
+    --background-accent: rgba(180, 180, 180, 0.15);
+    --background-floating: rgba(15, 15, 15, 0.95);
+    --background-modifier-hover: rgba(200, 200, 200, 0.08);
+    --background-modifier-selected: rgba(200, 200, 200, 0.12);
+    --background-message-hover: rgba(200, 200, 200, 0.06);
+    
+    --header-primary: #e0e0e0;
+    --header-secondary: #a0a0a0;
+    --text-normal: #e0e0e0;
+    --text-muted: #a0a0a0;
+    --interactive-normal: #c0c0c0;
+    --interactive-hover: #e0e0e0;
+    --interactive-active: #ffffff;
+    
+    --brand-experiment: #c0c0c0;
+    --brand-experiment-560: #c0c0c0;
+}
+
+/* Background and Lava Lamp Effect */
+body,
+html,
+#app-mount {
+    background: var(--bg-color) !important;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-color);
+    z-index: -999;
+    pointer-events: none;
+}
+
+/* Lava lamp blob 1 */
+body::after {
+    content: '';
+    position: fixed;
+    top: -10%;
+    left: -10%;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(circle, var(--blob-1-inner) 0%, var(--blob-1-outer) 50%, transparent 70%);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    animation: float var(--blob-1-speed) ease-in-out infinite, morph var(--morph-speed) ease-in-out infinite;
+    pointer-events: none;
+    z-index: -998;
+}
+
+/* Lava lamp blob 2 */
+html::before {
+    content: '';
+    position: fixed;
+    bottom: -10%;
+    right: -10%;
+    width: 45%;
+    height: 45%;
+    background: radial-gradient(circle, var(--blob-2-inner) 0%, var(--blob-2-outer) 50%, transparent 70%);
+    border-radius: 40% 60% 70% 30% / 40% 70% 30% 60%;
+    animation: float2 var(--blob-2-speed) ease-in-out infinite reverse, morph 10s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -998;
+}
+
+/* Lava lamp blob 3 */
+html::after {
+    content: '';
+    position: fixed;
+    top: 30%;
+    left: 60%;
+    width: 35%;
+    height: 35%;
+    background: radial-gradient(circle, var(--blob-3-inner) 0%, var(--blob-3-outer) 50%, transparent 70%);
+    border-radius: 50%;
+    animation: float var(--blob-3-speed) ease-in-out infinite;
+    pointer-events: none;
+    z-index: -998;
+}
+
+/* Transparency Effects */
+[class*="sidebar-"] {
+    background: rgba(20, 20, 20, var(--sidebar-opacity)) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+[class*="chat-"] {
+    background: rgba(20, 20, 20, var(--chat-opacity)) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+[class*="members-"] {
+    background: rgba(20, 20, 20, var(--member-opacity)) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+/* Message Styling */
+[class*="message-"] {
+    background: rgba(200, 200, 200, 0.03) !important;
+    border-radius: 8px;
+    margin: 2px 8px;
+    padding: 8px 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[class*="message-"]:hover {
+    background: rgba(200, 200, 200, 0.06) !important;
+    transform: translateX(4px);
+    box-shadow: 0 4px 15px rgba(200, 200, 200, 0.08);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(20, 20, 20, 0.5) !important;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(180, 180, 180, 0.5), rgba(140, 140, 140, 0.5)) !important;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(200, 200, 200, 0.7), rgba(160, 160, 160, 0.7)) !important;
+}
+
+/* Buttons */
+button[class*="button-"] {
+    background: linear-gradient(135deg, rgba(180, 180, 180, 0.7), rgba(140, 140, 140, 0.7)) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+button[class*="button-"]:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(200, 200, 200, 0.2);
+}
+
+/* Input Fields */
+input[class*="input-"],
+textarea {
+    background: rgba(20, 20, 20, 0.7) !important;
+    border: 1px solid rgba(200, 200, 200, 0.15) !important;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+input[class*="input-"]:focus,
+textarea:focus {
+    border-color: rgba(200, 200, 200, 0.3) !important;
+    box-shadow: 0 0 20px rgba(200, 200, 200, 0.1);
+}
+
+/* Avatars */
+img[class*="avatar-"] {
+    border-radius: 50%;
+    border: 2px solid rgba(200, 200, 200, 0.2);
+    transition: all 0.3s ease;
+}
+
+img[class*="avatar-"]:hover {
+    border-color: rgba(200, 200, 200, 0.5);
+    box-shadow: 0 0 20px rgba(200, 200, 200, 0.2);
+    transform: scale(1.05);
+}
+
+/* Tooltips */
+[class*="tooltip-"] {
+    background: rgba(20, 20, 20, 0.95) !important;
+    border: 1px solid rgba(200, 200, 200, 0.15);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Modals */
+[class*="modal-"] {
+    background: rgba(20, 20, 20, 0.95) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(200, 200, 200, 0.1);
+    border-radius: 16px;
+}
+
+/* Reactions */
+[class*="reaction-"] {
+    background: rgba(200, 200, 200, 0.05) !important;
+    border: 1px solid rgba(200, 200, 200, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+[class*="reaction-"]:hover {
+    background: rgba(200, 200, 200, 0.1) !important;
+    transform: scale(1.1);
+}
+
+/* Mentions */
+[class*="mentioned-"] {
+    background: linear-gradient(90deg, rgba(200, 200, 200, 0.1), rgba(180, 180, 180, 0.08)) !important;
+    border-left: 3px solid rgba(200, 200, 200, 0.5);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Unread Indicators */
+[class*="unread-"],
+[class*="numberBadge-"] {
+    background: linear-gradient(135deg, rgba(180, 180, 180, 0.8), rgba(140, 140, 140, 0.8)) !important;
+    animation: pulse 2s ease-in-out infinite;
+}
+
