@@ -1,0 +1,859 @@
+/**
+ * @name minimal dark mode+
+ * @author 808
+ * @description A sleek minimal dark theme with video background, glassmorphism transparency, and smooth animations throughout.
+ * @version 3.0.0
+ */
+
+/* ============================================================
+   IMPORT BASE FONT
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+/* ============================================================
+   CSS VARIABLES
+   ============================================================ */
+:root {
+  /* Glassmorphism */
+  --glass-bg:           rgba(12, 12, 16, 0.74);
+  --glass-bg-light:     rgba(26, 26, 32, 0.66);
+  --glass-bg-hover:     rgba(38, 38, 46, 0.72);
+  --glass-border:       rgba(255, 255, 255, 0.065);
+  --glass-border-hover: rgba(255, 255, 255, 0.14);
+  --glass-blur:         blur(22px) saturate(1.5);
+  --glass-blur-heavy:   blur(36px) saturate(1.7);
+
+  /* Core palette */
+  --col-bg:           #09090b;
+  --col-surface:      #101013;
+  --col-surface-2:    #17171b;
+  --col-surface-3:    #202026;
+  --col-border:       rgba(255,255,255,0.055);
+  --col-text:         #e4e4ec;
+  --col-text-muted:   #8a8a9a;
+  --col-text-faint:   #424255;
+  --col-accent:       #cacadc;
+  --col-accent-glow:  rgba(202, 202, 228, 0.32);
+  --col-white:        #ffffff;
+  --col-mention:      rgba(202, 202, 228, 0.11);
+  --col-mention-bar:  rgba(202, 202, 228, 0.65);
+
+  /* Pearlescent shimmer */
+  --pearl-gradient: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.07) 0%,
+    rgba(202,202,228,0.04) 30%,
+    rgba(180,180,210,0.02) 60%,
+    rgba(255,255,255,0.06) 100%
+  );
+
+  /* Radii */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   22px;
+  --radius-pill: 999px;
+
+  /* Transitions */
+  --t-fast:   0.14s cubic-bezier(0.4,0,0.2,1);
+  --t-med:    0.24s cubic-bezier(0.4,0,0.2,1);
+  --t-slow:   0.40s cubic-bezier(0.4,0,0.2,1);
+  --t-spring: 0.34s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes fade-in-up  { from{opacity:0;transform:translateY(10px)}  to{opacity:1;transform:translateY(0)} }
+@keyframes scale-in    { from{opacity:0;transform:scale(0.94)}        to{opacity:1;transform:scale(1)}    }
+@keyframes pulse-glow  { 0%,100%{box-shadow:0 0 0px rgba(200,200,220,0)} 50%{box-shadow:0 0 18px rgba(200,200,220,0.20)} }
+@keyframes pearl-shimmer {
+  0%  {opacity:0.6;background-position:0% 50%}
+  50% {opacity:1.0;background-position:100% 50%}
+  100%{opacity:0.6;background-position:0% 50%}
+}
+
+/* ============================================================
+   DISCORD THEME VARIABLE OVERRIDES
+   ============================================================ */
+.theme-dark,
+.theme-light {
+  --font-primary: 'Inter', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
+
+  /* Backgrounds — near-transparent so our blobs show through */
+  --background-primary:           rgba(12,12,16,0.01) !important;
+  --background-secondary:         rgba(9,9,13,0.01)   !important;
+  --background-secondary-alt:     rgba(7,7,11,0.01)   !important;
+  --background-tertiary:          rgba(5,5,9,0.01)    !important;
+  --background-accent:            rgba(200,200,220,0.09) !important;
+  --background-floating:          rgba(16,16,22,0.90) !important;
+  --background-modifier-hover:    rgba(255,255,255,0.055) !important;
+  --background-modifier-active:   rgba(255,255,255,0.09)  !important;
+  --background-modifier-selected: rgba(255,255,255,0.075) !important;
+  --background-modifier-accent:   rgba(255,255,255,0.065) !important;
+
+  /* Text */
+  --text-normal:        #e4e4ec !important;
+  --text-muted:         #8a8a9a !important;
+  --text-link:          #cacadc !important;
+  --header-primary:     #f2f2f8 !important;
+  --header-secondary:   #ababbe !important;
+  --interactive-normal: #c2c2d4 !important;
+  --interactive-hover:  #f2f2fa !important;
+  --interactive-active: #ffffff !important;
+  --interactive-muted:  #525265 !important;
+
+  /* Brand */
+  --brand-experiment:          #a2a2bc !important;
+  --brand-experiment-560:      #b2b2cc !important;
+  --brand-experiment-300a:     rgba(162,162,188,0.32) !important;
+  --button-secondary-background: rgba(255,255,255,0.07) !important;
+
+  /* Input */
+  --channeltextarea-background: rgba(18,18,25,0.58) !important;
+  --deprecated-card-bg:         rgba(18,18,24,0.62) !important;
+  --deprecated-text-input-bg:   rgba(13,13,18,0.72) !important;
+
+  /* Scrollbar */
+  --scrollbar-thin-thumb: rgba(200,200,220,0.20) !important;
+  --scrollbar-thin-track: transparent             !important;
+  --scrollbar-auto-thumb: rgba(200,200,220,0.20) !important;
+  --scrollbar-auto-track: rgba(255,255,255,0.02)  !important;
+}
+
+/* ============================================================
+   VIDEO BACKGROUND
+   ============================================================ */
+body {
+  background: var(--col-bg) !important;
+}
+
+/* ============================================================
+   APP SHELL — z-index stack so video stays behind everything
+   ============================================================ */
+#app-mount,
+[class*="app-"],
+[class*="appMount-"],
+[class*="baseLayer-"],
+[class*="bg-"] {
+  background: transparent !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+[class*="app-"],
+[class*="appAsidePanelWrapper-"],
+[class*="appMount-"] {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   SERVER / GUILD SIDEBAR
+   ============================================================ */
+[class*="guilds-"],
+[class*="guildSeparator-"],
+[class*="scroller-"][class*="guilds-"] {
+  background: rgba(7, 7, 10, 0.74) !important;
+  backdrop-filter: var(--glass-blur-heavy) !important;
+  border-right: 1px solid var(--glass-border) !important;
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================================
+   CHANNEL SIDEBAR
+   ============================================================ */
+[class*="sidebar-"],
+[class*="sidebarList-"] {
+  background: rgba(9, 9, 13, 0.70) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  border-right: 1px solid var(--glass-border) !important;
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================================
+   MAIN CHAT AREA
+   ============================================================ */
+[class*="chat-"],
+[class*="chatContent-"] {
+  background: transparent !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   MEMBER LIST
+   ============================================================ */
+[class*="membersWrap-"],
+[class*="members-"] {
+  background: rgba(9, 9, 13, 0.65) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  border-left: 1px solid var(--glass-border) !important;
+}
+
+/* ============================================================
+   HEADER BAR  (channel name + toolbar)
+   ============================================================ */
+[class*="header-"][class*="container-"],
+[class*="titleWrapper-"],
+[class*="toolbar-"] {
+  background: rgba(10, 10, 15, 0.76) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  box-shadow: 0 1px 0 var(--glass-border) !important;
+}
+
+/* ============================================================
+   FRIENDS / DM HEADER TABS
+   (the bar with Friends · Online · All · Pending · Blocked · Add Friend)
+   ============================================================ */
+[class*="privateChannelsHeaderContainer-"],
+[class*="tabBar-"],
+[class*="nowPlayingColumn-"],
+[class*="friendsTable-"] > [class*="toolbar-"],
+/* top friends toolbar */
+[class*="content-"][class*="page-"][class*="homePage-"],
+[class*="pageWrapper-"] > [class*="header-"] {
+  background: rgba(10, 10, 15, 0.76) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+/* Tab items: Friends / Online / All / Pending / Blocked */
+[class*="tabBar-"] [class*="item-"],
+[class*="tab-"][class*="top-"] {
+  color: var(--col-text-muted) !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 4px 12px !important;
+  transition: background var(--t-fast), color var(--t-fast) !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  border: none !important;
+}
+
+[class*="tabBar-"] [class*="item-"]:hover,
+[class*="tab-"][class*="top-"]:hover {
+  background: rgba(255,255,255,0.07) !important;
+  color: var(--col-text) !important;
+}
+
+[class*="tabBar-"] [class*="item-"][class*="active-"],
+[class*="tabBar-"] [class*="item-"][class*="selected-"],
+[class*="tab-"][class*="top-"][class*="active-"] {
+  background: rgba(200,200,220,0.12) !important;
+  color: var(--col-white) !important;
+  border-bottom: 2px solid rgba(200,200,220,0.60) !important;
+}
+
+/* "Add Friend" button in the friends bar */
+[class*="addFriend-"] button,
+[class*="addFriendButton-"] {
+  background: rgba(170,170,200,0.18) !important;
+  border: 1px solid rgba(200,200,220,0.24) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--col-white) !important;
+  font-weight: 500 !important;
+  transition: background var(--t-fast), transform var(--t-spring) !important;
+}
+
+[class*="addFriend-"] button:hover,
+[class*="addFriendButton-"]:hover {
+  background: rgba(200,200,220,0.26) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ============================================================
+   MESSAGE AREA
+   ============================================================ */
+[class*="messagesWrapper-"],
+[class*="scroller-"] {
+  background: transparent !important;
+}
+
+[class*="message-"]:hover {
+  background: rgba(255,255,255,0.030) !important;
+  border-radius: var(--radius-md) !important;
+  transition: background var(--t-fast) !important;
+}
+
+[class*="messageListItem-"] {
+  animation: fade-in-up 0.18s ease forwards !important;
+  transition: transform var(--t-fast) !important;
+}
+
+[class*="mentioned-"] {
+  background: var(--col-mention) !important;
+  border-left: 3px solid var(--col-mention-bar) !important;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0 !important;
+}
+
+/* ============================================================
+   CHAT INPUT BAR
+   ============================================================ */
+[class*="channelTextArea-"] {
+  background: rgba(18, 18, 25, 0.62) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: border-color var(--t-med), box-shadow var(--t-med) !important;
+  margin: 0 16px 16px !important;
+  overflow: hidden;
+}
+
+[class*="channelTextArea-"]:focus-within {
+  border-color: rgba(200,200,220,0.20) !important;
+  box-shadow: 0 0 0 2px rgba(200,200,220,0.09), 0 8px 32px rgba(0,0,0,0.32) !important;
+}
+
+[class*="textArea-"] {
+  background: transparent !important;
+  color: var(--col-text) !important;
+}
+
+[class*="textArea-"] [class*="placeholder-"] {
+  color: var(--col-text-faint) !important;
+}
+
+/* Buttons inside the chat bar */
+[class*="attachButton-"],
+[class*="buttons-"][class*="actionButtons-"] button {
+  color: var(--col-text-muted) !important;
+  transition: color var(--t-fast), transform var(--t-spring) !important;
+}
+
+[class*="attachButton-"]:hover,
+[class*="buttons-"][class*="actionButtons-"] button:hover {
+  color: var(--col-white) !important;
+  transform: scale(1.12) !important;
+}
+
+/* ============================================================
+   CHANNEL LIST ITEMS
+   ============================================================ */
+[class*="containerDefault-"] {
+  border-radius: var(--radius-md) !important;
+  transition: background var(--t-fast), transform var(--t-spring), padding-left var(--t-fast) !important;
+  margin: 1px 8px !important;
+}
+
+[class*="containerDefault-"]:hover {
+  background: rgba(255,255,255,0.065) !important;
+  transform: translateX(2px) !important;
+}
+
+[class*="modeSelected-"] [class*="containerDefault-"],
+[class*="containerDefault-"][class*="modeSelected-"] {
+  background: rgba(200,200,220,0.11) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer on selected channel */
+[class*="modeSelected-"] [class*="containerDefault-"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--pearl-gradient);
+  background-size: 200% 200%;
+  border-radius: inherit;
+  animation: pearl-shimmer 7s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[class*="name-"] {
+  transition: color var(--t-fast) !important;
+}
+
+[class*="containerDefault-"]:hover [class*="name-"] {
+  color: var(--col-text) !important;
+}
+
+/* Category headers */
+[class*="containerDefault-"][class*="hasCaret-"] {
+  font-size: 10px !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--col-text-faint) !important;
+  transition: color var(--t-fast) !important;
+  margin: 8px 8px 2px !important;
+}
+
+[class*="containerDefault-"][class*="hasCaret-"]:hover {
+  color: var(--col-text-muted) !important;
+  background: transparent !important;
+  transform: none !important;
+}
+
+/* ============================================================
+   SERVER ICONS
+   ============================================================ */
+[class*="wrapper-"][class*="svg-"],
+[class*="blobContainer-"] {
+  transition: transform var(--t-spring), filter var(--t-med) !important;
+}
+
+[class*="listItem-"]:hover [class*="wrapper-"] {
+  transform: scale(1.08) !important;
+  filter: brightness(1.18) !important;
+}
+
+[class*="pill-"] span {
+  background: rgba(222,222,240,0.88) !important;
+  border-radius: var(--radius-pill) !important;
+}
+
+/* ============================================================
+   USER PANEL — bottom left (avatar, username, voice/mic icons)
+   ============================================================ */
+[class*="panels-"],
+[class*="panel-"][class*="accountSection-"] {
+  background: rgba(7, 7, 11, 0.78) !important;
+  backdrop-filter: var(--glass-blur-heavy) !important;
+  border-top: 1px solid var(--glass-border) !important;
+  position: relative;
+  z-index: 3;
+}
+
+/* The inner account info row */
+[class*="accountSection-"],
+[class*="container-"][class*="avatarContainer-"],
+[class*="nameTag-"] {
+  background: transparent !important;
+}
+
+/* Username + discriminator text */
+[class*="usernameContainer-"] [class*="username-"],
+[class*="nameTag-"] [class*="username-"] {
+  color: var(--col-text) !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+}
+
+[class*="nameTag-"] [class*="discriminator-"],
+[class*="nameTag-"] [class*="subText-"] {
+  color: var(--col-text-muted) !important;
+  font-size: 11px !important;
+}
+
+/* Hover glow on the account area */
+[class*="accountSection-"]:hover {
+  background: rgba(255,255,255,0.045) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+/* Mic / Deafen / Settings buttons in the panel */
+[class*="button-"][class*="buttonColor-"],
+[class*="button-"][class*="icon-"] {
+  border-radius: var(--radius-md) !important;
+  transition: background var(--t-fast), transform var(--t-spring), color var(--t-fast) !important;
+  color: var(--col-text-muted) !important;
+}
+
+[class*="button-"][class*="buttonColor-"]:hover,
+[class*="button-"][class*="icon-"]:hover {
+  background: rgba(255,255,255,0.08) !important;
+  color: var(--col-white) !important;
+  transform: scale(1.12) !important;
+}
+
+/* Active/muted state */
+[class*="button-"][class*="buttonColor-"][class*="active-"],
+[class*="active-"] [class*="button-"] {
+  background: rgba(200,200,220,0.14) !important;
+  color: var(--col-white) !important;
+}
+
+/* User avatar in panel */
+[class*="avatar-"][class*="clickable-"] {
+  transition: transform var(--t-spring), box-shadow var(--t-med) !important;
+}
+
+[class*="avatar-"][class*="clickable-"]:hover {
+  transform: scale(1.10) !important;
+  box-shadow: 0 0 0 2px rgba(200,200,220,0.42), 0 4px 16px rgba(0,0,0,0.55) !important;
+}
+
+/* ============================================================
+   MODALS & POPOUTS
+   ============================================================ */
+[class*="root-"][class*="modal-"],
+[class*="modal-"][class*="root-"] {
+  background: rgba(12,12,17,0.84) !important;
+  backdrop-filter: var(--glass-blur-heavy) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.70), 0 0 0 1px rgba(255,255,255,0.04) !important;
+  animation: scale-in 0.18s cubic-bezier(0.34,1.2,0.64,1) !important;
+}
+
+[class*="root-"][class*="modal-"] [class*="header-"] {
+  background: rgba(255,255,255,0.025) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0 !important;
+}
+
+/* Popouts / context menus */
+[class*="popout-"],
+[class*="layer-"] [class*="popout-"] {
+  background: rgba(13,13,18,0.90) !important;
+  backdrop-filter: var(--glass-blur-heavy) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.68), 0 0 0 1px rgba(255,255,255,0.04) !important;
+  padding: 6px !important;
+  animation: scale-in 0.16s cubic-bezier(0.34,1.2,0.64,1) !important;
+  overflow: hidden;
+}
+
+[class*="item-"][class*="labelContainer-"] {
+  border-radius: var(--radius-sm) !important;
+  transition: background var(--t-fast) !important;
+}
+
+[class*="item-"][class*="labelContainer-"]:hover {
+  background: rgba(200,200,220,0.11) !important;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+[class*="button-"][class*="lookFilled-"][class*="colorBrand-"],
+button[class*="lookFilled-"] {
+  background: rgba(178,178,205,0.22) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(200,200,220,0.24) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--col-white) !important;
+  transition: background var(--t-fast), transform var(--t-spring), box-shadow var(--t-fast) !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.32) !important;
+}
+
+[class*="button-"][class*="lookFilled-"][class*="colorBrand-"]:hover,
+button[class*="lookFilled-"]:hover {
+  background: rgba(200,200,220,0.30) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.42), 0 0 0 1px rgba(222,222,244,0.22) !important;
+}
+
+[class*="button-"][class*="lookFilled-"][class*="colorBrand-"]:active,
+button[class*="lookFilled-"]:active {
+  transform: translateY(1px) scale(0.98) !important;
+}
+
+[class*="button-"][class*="lookLink-"] {
+  color: var(--col-accent) !important;
+  transition: color var(--t-fast), opacity var(--t-fast) !important;
+}
+
+[class*="button-"][class*="lookLink-"]:hover {
+  color: var(--col-white) !important;
+  text-decoration: none !important;
+}
+
+/* ============================================================
+   SCROLLBARS
+   ============================================================ */
+::-webkit-scrollbar        { width: 5px !important; height: 5px !important; }
+::-webkit-scrollbar-thumb  { background: rgba(200,200,220,0.18) !important; border-radius: var(--radius-pill) !important; }
+::-webkit-scrollbar-thumb:hover { background: rgba(200,200,220,0.34) !important; }
+::-webkit-scrollbar-track  { background: transparent !important; }
+::-webkit-scrollbar-corner { background: transparent !important; }
+
+/* ============================================================
+   TOOLTIPS
+   ============================================================ */
+[class*="tooltip-"] {
+  background: rgba(20,20,28,0.94) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.52) !important;
+  color: var(--col-text) !important;
+  font-size: 12px !important;
+  padding: 6px 10px !important;
+  animation: fade-in-up 0.14s ease !important;
+}
+
+[class*="tooltipPointer-"] { display: none !important; }
+
+/* ============================================================
+   TYPING INDICATOR
+   ============================================================ */
+[class*="typing-"] {
+  background: transparent !important;
+  color: var(--col-text-muted) !important;
+  font-size: 12px !important;
+  animation: fade-in-up 0.2s ease !important;
+}
+
+/* ============================================================
+   REACTION PILLS
+   ============================================================ */
+[class*="reaction-"] {
+  background: rgba(255,255,255,0.065) !important;
+  border: 1px solid rgba(255,255,255,0.09) !important;
+  border-radius: var(--radius-pill) !important;
+  transition: background var(--t-fast), transform var(--t-spring), border-color var(--t-fast) !important;
+}
+
+[class*="reaction-"]:hover {
+  background: rgba(200,200,220,0.13) !important;
+  border-color: rgba(200,200,220,0.24) !important;
+  transform: scale(1.08) translateY(-1px) !important;
+}
+
+[class*="reaction-"][class*="reactionMe-"] {
+  background: rgba(200,200,220,0.16) !important;
+  border-color: rgba(200,200,220,0.32) !important;
+}
+
+/* ============================================================
+   EMBEDS & ATTACHMENTS
+   ============================================================ */
+[class*="embed-"] {
+  background: rgba(18,18,25,0.60) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-left: 3px solid rgba(180,180,205,0.48) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: border-color var(--t-med), box-shadow var(--t-med) !important;
+}
+
+[class*="embed-"]:hover {
+  border-left-color: rgba(220,220,244,0.72) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.32) !important;
+}
+
+[class*="imageWrapper-"] {
+  border-radius: var(--radius-lg) !important;
+  overflow: hidden !important;
+  transition: transform var(--t-med), box-shadow var(--t-med) !important;
+}
+
+[class*="imageWrapper-"]:hover {
+  transform: scale(1.013) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.48) !important;
+}
+
+/* ============================================================
+   SEARCH BAR
+   ============================================================ */
+[class*="search-"][class*="open-"],
+[class*="searchBar-"] {
+  background: rgba(18,18,26,0.72) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--radius-md) !important;
+  transition: border-color var(--t-med), box-shadow var(--t-med) !important;
+}
+
+[class*="search-"][class*="open-"]:focus-within,
+[class*="searchBar-"]:focus-within {
+  border-color: rgba(200,200,220,0.24) !important;
+  box-shadow: 0 0 0 2px rgba(200,200,220,0.09) !important;
+}
+
+/* ============================================================
+   FORM INPUTS (settings)
+   ============================================================ */
+[class*="inputDefault-"],
+[class*="input-"][class*="inputDefault-"] {
+  background: rgba(12,12,18,0.72) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--col-text) !important;
+  transition: border-color var(--t-med), box-shadow var(--t-med) !important;
+}
+
+[class*="inputDefault-"]:focus {
+  border-color: rgba(200,200,220,0.30) !important;
+  box-shadow: 0 0 0 2px rgba(200,200,220,0.11) !important;
+  outline: none !important;
+}
+
+/* ============================================================
+   SETTINGS PANEL
+   ============================================================ */
+[class*="contentRegion-"] {
+  background: transparent !important;
+}
+
+[class*="sidebar-"][class*="standardSidebarView-"] {
+  background: rgba(9,9,13,0.72) !important;
+  backdrop-filter: var(--glass-blur) !important;
+}
+
+[class*="item-"][class*="themed-"] {
+  border-radius: var(--radius-md) !important;
+  transition: background var(--t-fast) !important;
+}
+
+[class*="item-"][class*="themed-"]:hover {
+  background: rgba(255,255,255,0.065) !important;
+}
+
+[class*="item-"][class*="themed-"][class*="selected-"] {
+  background: rgba(200,200,220,0.11) !important;
+}
+
+[class*="card-"][class*="cardPrimary-"],
+[class*="card-"] {
+  background: rgba(16,16,22,0.67) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast) !important;
+}
+
+[class*="card-"]:hover {
+  border-color: var(--glass-border-hover) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.38) !important;
+}
+
+/* ============================================================
+   UNREAD BADGES
+   ============================================================ */
+[class*="unreadMentionsIndicator-"],
+[class*="numberBadge-"] {
+  background: rgba(200,200,220,0.30) !important;
+  border: 1px solid rgba(220,220,244,0.46) !important;
+  border-radius: var(--radius-pill) !important;
+  backdrop-filter: blur(8px) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  transition: transform var(--t-spring) !important;
+  animation: pulse-glow 3.5s ease-in-out infinite !important;
+}
+
+[class*="numberBadge-"]:hover {
+  transform: scale(1.1) !important;
+}
+
+/* ============================================================
+   DIVIDERS
+   ============================================================ */
+[class*="divider-"] {
+  border-color: var(--glass-border) !important;
+  opacity: 0.65 !important;
+}
+
+[class*="isUnread-"] [class*="divider-"] {
+  border-color: rgba(200,200,220,0.22) !important;
+}
+
+/* ============================================================
+   AVATAR HOVER
+   ============================================================ */
+[class*="avatar-"] {
+  transition: transform var(--t-spring), box-shadow var(--t-med) !important;
+}
+
+[class*="avatar-"]:hover {
+  transform: scale(1.12) !important;
+  box-shadow: 0 0 0 2px rgba(200,200,220,0.42), 0 4px 16px rgba(0,0,0,0.52) !important;
+}
+
+/* ============================================================
+   STATUS INDICATORS
+   ============================================================ */
+[class*="status-"] {
+  transition: transform var(--t-spring) !important;
+}
+
+[class*="status-"]:hover {
+  transform: scale(1.2) !important;
+}
+
+/* ============================================================
+   TOOLBAR / HEADER ICONS
+   ============================================================ */
+[class*="iconWrapper-"],
+[class*="icon-"] {
+  transition: color var(--t-fast), transform var(--t-spring), opacity var(--t-fast) !important;
+}
+
+[class*="iconWrapper-"]:hover,
+[class*="icon-"]:hover {
+  color: var(--col-white) !important;
+  transform: scale(1.12) !important;
+  opacity: 1 !important;
+}
+
+/* ============================================================
+   SYSTEM MESSAGES
+   ============================================================ */
+[class*="systemMessage-"] {
+  color: var(--col-text-faint) !important;
+  font-size: 12px !important;
+}
+
+/* ============================================================
+   UPLOAD AREA
+   ============================================================ */
+[class*="uploadArea-"] {
+  background: rgba(18,18,26,0.72) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  border: 2px dashed rgba(200,200,220,0.22) !important;
+  border-radius: var(--radius-xl) !important;
+}
+
+/* ============================================================
+   WUMPUS / EMPTY STATES
+   ============================================================ */
+[class*="emptyStateImage-"] {
+  filter: grayscale(1) brightness(0.55) !important;
+  opacity: 0.45 !important;
+}
+
+/* ============================================================
+   GLOBAL TRANSITION POLISH
+   ============================================================ */
+a, button, [role="button"],
+[class*="interactive-"],
+[class*="option-"],
+[class*="item-"] {
+  transition-property: color, background, border-color, opacity, transform, box-shadow !important;
+  transition-duration: 0.17s !important;
+  transition-timing-function: cubic-bezier(0.4,0,0.2,1) !important;
+}
+
+/* ============================================================
+   SELECTION & FOCUS
+   ============================================================ */
+::selection {
+  background: rgba(200,200,220,0.26) !important;
+  color: var(--col-white) !important;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(200,200,220,0.42) !important;
+  outline-offset: 2px !important;
+}
+
+/* ============================================================
+   NITRO UPSELL / GIFT BUTTON — hide or dim
+   ============================================================ */
+[class*="premiumIcon-"],
+[class*="giftIcon-"] {
+  opacity: 0.35 !important;
+  transition: opacity var(--t-fast) !important;
+}
+[class*="premiumIcon-"]:hover,
+[class*="giftIcon-"]:hover {
+  opacity: 0.75 !important;
+}
+
+/* ============================================================
+   SERVER BOOST / DISCOVERY BUTTONS
+   ============================================================ */
+[class*="boostIcon-"] {
+  filter: grayscale(0.6) !important;
+  opacity: 0.7 !important;
+}
+
+/* ============================================================
+   END — minimal dark mode+ v2 by 808
+   ============================================================ */
